@@ -24,9 +24,11 @@ juce_add_binary_data(STILLAssets
         Assets/Stage/D_A_BODY_STAGE_48k.wav
         Assets/Stage/D_A_SWIRL_STAGE_48k.wav
         Assets/Stage/D_C_AIR_STAGE_48k.wav
+        Assets/FactoryPack/manifest.json
         ${STILL_PITCH_BANK_ASSETS})
 add_library(StillDsp STATIC
-    Source/Dsp/DroneEngine.cpp Source/Dsp/DroneMath.h Source/Dsp/DroneEngine.h)
+    Source/Dsp/DroneEngine.cpp Source/Dsp/DroneMath.h Source/Dsp/DroneEngine.h
+    Source/Packs/DroneSamplePack.cpp Source/Packs/DroneSamplePack.h)
 target_include_directories(StillDsp PUBLIC Source)
 target_link_libraries(StillDsp PUBLIC STILLAssets juce::juce_audio_formats juce::juce_audio_basics juce::juce_dsp)
 target_compile_definitions(StillDsp PUBLIC JUCE_WEB_BROWSER=0 JUCE_USE_CURL=0)
@@ -63,4 +65,6 @@ if(STILL_BUILD_TESTS)
     add_test(NAME audio_asset_integrity COMMAND ${Python3_EXECUTABLE}
         ${CMAKE_CURRENT_SOURCE_DIR}/tools/validate_audio_assets.py ${CMAKE_CURRENT_SOURCE_DIR}/Assets)
     add_test(NAME drone_engine_smoke COMMAND StillDspTests)
+    add_test(NAME still_pack_importer COMMAND ${Python3_EXECUTABLE}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Tests/test_import_still_pack.py)
 endif()

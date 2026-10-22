@@ -76,6 +76,24 @@ StillAudioProcessorEditor::StillAudioProcessorEditor(StillAudioProcessor& proces
     motionSlider_.setTooltip("Add very slow, restrained playback drift to the layers.");
     levelSlider_.setTooltip("Overall output level, independent of OPEN.");
 
+    packBox_.setColour(juce::ComboBox::backgroundColourId, panel);
+    packBox_.setColour(juce::ComboBox::textColourId, text);
+    packBox_.setColour(juce::ComboBox::outlineColourId, line);
+    packBox_.setColour(juce::ComboBox::arrowColourId, accent);
+    packBox_.setTooltip("Choose an installed STILL sample pack. Add packs with tools/import_still_pack.py.");
+    packBox_.onChange = [this]
+    {
+        if (refreshingPackBox_)
+            return;
+        const auto index = packBox_.getSelectedId() - 1;
+        if (index >= 0 && static_cast<std::size_t>(index) < displayedPackChoices_.size())
+        {
+            const auto& selected = displayedPackChoices_[static_cast<std::size_t>(index)];
+            processor_.selectPack(selected.id, selected.version);
+        }
+    };
+    addAndMakeVisible(packBox_);
+
     keyBox_.addItemList({"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"}, 1);
     keyBox_.setColour(juce::ComboBox::backgroundColourId, panel);
     keyBox_.setColour(juce::ComboBox::textColourId, text);
@@ -102,6 +120,7 @@ StillAudioProcessorEditor::StillAudioProcessorEditor(StillAudioProcessor& proces
     startAttachment_ = std::make_unique<juce::AudioProcessorValueTreeState::ButtonAttachment>(parameters, "start", startButton_);
 
     startTimerHz(10);
+    refreshPackSelector();
     timerCallback();
 }
 
@@ -167,11 +186,10 @@ void StillAudioProcessorEditor::paint(juce::Graphics& g)
     g.setFont(juce::Font(juce::FontOptions(12.0f)));
     g.drawText("BODY remains present as the sound recedes.", 468, 456, 340, 18,
                juce::Justification::centredLeft);
-    g.setColour(muted);
+    g.setColour(processor_.packUnavailable() ? juce::Colour(0xffe08c78) : muted);
     g.setFont(juce::Font(juce::FontOptions(9.0f)));
-    g.drawText(processor_.assetsReady() ? "D SOURCE IS UNPROCESSED  ·  STEREO  ·  48 kHz"
-                                       : "AUDIO BANK UNAVAILABLE",
-               32, 496, 520, 14, juce::Justification::centredLeft);
+    g.drawText(processor_.getPackStatus(), 32, 496, 780, 14,
+               juce::Justification::centredLeft, true);
 }
 
 void StillAudioProcessorEditor::resized()
@@ -198,6 +216,7 @@ void StillAudioProcessorEditor::resized()
 
     keyBox_.setBounds(631, 31, 84, 34);
     startButton_.setBounds(729, 31, 102, 34);
+    packBox_.setBounds(290, 31, 310, 34);
 }
 
 void StillAudioProcessorEditor::updateReadouts()
@@ -213,8 +232,69 @@ void StillAudioProcessorEditor::updateReadouts()
 
 void StillAudioProcessorEditor::timerCallback()
 {
+    refreshPackSelector();
     updateReadouts();
     const auto text = startButton_.getToggleState() ? "DRONE ON" : "START DRONE";
     if (startButton_.getButtonText() != text)
         startButton_.setButtonText(text);
+    repaint();
+}
+
+void StillAudioProcessorEditor::refreshPackSelector()
+{
+    auto current = processor_.getPackChoices();
+    const auto sameChoices = current.size() == displayedPackChoices_.size()
+        && std::equal(current.begin(), current.end(), displayedPackChoices_.begin(),
+            [](const auto& a, const auto& b)
+            {
+                return a.id == b.id && a.version == b.version && a.displayName == b.displayName;
+            });
+    const auto selectedId = processor_.getSelectedPackId();
+    const auto selectedVersion = processor_.getSelectedPackVersion();
+    const auto selectedIsAvailable = std::any_of(current.begin(), current.end(), [&](const auto& item)
+    {
+        return item.id == selectedId && item.version == selectedVersion;
+    });
+    const auto showingMissingEntry = packBox_.getNumItems() > static_cast<int>(displayedPackChoices_.size());
+    if (!sameChoices || packBox_.getNumItems() == 0 || (!selectedIsAvailable && !showingMissingEntry))
+    {
+        refreshingPackBox_ = true;
+        packBox_.clear(juce::dontSendNotification);
+        displayedPackChoices_ = std::move(current);
+        int selectedItem = 0;
+        for (std::size_t i = 0; i < displayedPackChoices_.size(); ++i)
+        {
+            const auto& item = displayedPackChoices_[i];
+            auto label = item.displayName;
+            if (!item.factory)
+                label << "  ·  " << item.version;
+            packBox_.addItem(label, static_cast<int>(i + 1));
+            if (item.id == selectedId && item.version == selectedVersion)
+                selectedItem = static_cast<int>(i + 1);
+        }
+        if (selectedItem == 0 && (selectedId.isNotEmpty() || selectedVersion.isNotEmpty()))
+        {
+            selectedItem = static_cast<int>(displayedPackChoices_.size() + 1);
+            packBox_.addItem("Missing: " + selectedId + " " + selectedVersion, selectedItem);
+        }
+        if (selectedItem == 0)
+            selectedItem = 1;
+        packBox_.setSelectedId(selectedItem, juce::dontSendNotification);
+        refreshingPackBox_ = false;
+    }
+    else if (!packBox_.isPopupActive())
+    {
+        for (std::size_t i = 0; i < displayedPackChoices_.size(); ++i)
+        {
+            const auto& item = displayedPackChoices_[i];
+            if (item.id == selectedId && item.version == selectedVersion
+                && packBox_.getSelectedId() != static_cast<int>(i + 1))
+            {
+                refreshingPackBox_ = true;
+                packBox_.setSelectedId(static_cast<int>(i + 1), juce::dontSendNotification);
+                refreshingPackBox_ = false;
+                break;
+            }
+        }
+    }
 }

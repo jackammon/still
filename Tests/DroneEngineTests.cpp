@@ -61,10 +61,109 @@ void processBlocks(still::dsp::DroneEngine& engine, juce::AudioBuffer<float>& bl
             measure(block, *stats);
     }
 }
+
+bool writeTestWave(const juce::File& file, float level)
+{
+    juce::WavAudioFormat wav;
+    std::unique_ptr<juce::OutputStream> stream = file.createOutputStream();
+    if (stream == nullptr)
+        return false;
+    const auto options = juce::AudioFormatWriterOptions{}
+        .withSampleRate(48000.0)
+        .withNumChannels(2)
+        .withBitsPerSample(24);
+    auto writer = wav.createWriterFor(stream, options);
+    if (writer == nullptr)
+        return false;
+    juce::AudioBuffer<float> samples(2, 512);
+    for (int frame = 0; frame < samples.getNumSamples(); ++frame)
+    {
+        const auto value = level * std::sin(juce::MathConstants<float>::twoPi
+                                             * static_cast<float>(frame) / 128.0f);
+        samples.setSample(0, frame, value);
+        samples.setSample(1, frame, value);
+    }
+    const auto wrote = writer->writeFromAudioSampleBuffer(samples, 0, samples.getNumSamples());
+    writer.reset();
+    return wrote;
+}
+
+void checkSamplePackLoader()
+{
+    auto root = juce::File::getSpecialLocation(juce::File::tempDirectory)
+        .getChildFile("still-pack-loader-test-" + juce::Uuid().toString());
+    auto audio = root.getChildFile("audio");
+    audio.createDirectory();
+    require(writeTestWave(audio.getChildFile("body.wav"), 0.1f), "temporary BODY WAV writes");
+    require(writeTestWave(audio.getChildFile("swirl.wav"), 0.08f), "temporary SWIRL WAV writes");
+    auto manifest = root.getChildFile("manifest.json");
+    const auto validManifest = juce::String(R"json({
+      "schema_version": 1,
+      "id": "test.still.pack",
+      "version": "1.0.0",
+      "display_name": "Loader Test Pack",
+      "instrument": "still",
+      "source_license": "Synthetic test audio; generated for automated tests.",
+      "extensions": {"still": {"original_root_pitch_class": 2}},
+      "assets": [
+        {"id":"body-d","path":"audio/body.wav","role":"drone_body","pitch_class":2,
+         "loop_start_frame":0,"loop_end_frame":512,"loop_xfade_frames":0,
+         "extensions":{"still":{"synchronized_group":"d-main"}}},
+        {"id":"swirl-d","path":"audio/swirl.wav","role":"drone_swirl","pitch_class":2,
+         "loop_start_frame":0,"loop_end_frame":512,"loop_xfade_frames":0,
+         "extensions":{"still":{"synchronized_group":"d-main"}}}
+      ]
+    })json");
+    manifest.replaceWithText(validManifest);
+
+    std::unique_ptr<still::packs::PreparedDronePack> loaded;
+    juce::String error;
+    require(still::packs::DronePackLoader::loadDirectory(root, loaded, error),
+            "external sample-pack v1 manifest and WAV assets load");
+    require(loaded != nullptr && loaded->layer(2, still::packs::DroneLayerRole::body) != nullptr
+                && loaded->layer(2, still::packs::DroneLayerRole::swirl) != nullptr,
+            "external pack exposes the synchronized D BODY and SWIRL layers");
+
+    const auto outside = root.getSiblingFile("outside-" + juce::Uuid().toString() + ".wav");
+    require(writeTestWave(outside, 0.1f), "temporary outside WAV writes");
+    manifest.replaceWithText(validManifest.replace("audio/body.wav", "../" + outside.getFileName()));
+    loaded.reset();
+    require(!still::packs::DronePackLoader::loadDirectory(root, loaded, error),
+            "external sample-pack loader rejects path traversal");
+    root.deleteRecursively();
+    outside.deleteFile();
+}
+
+std::unique_ptr<still::packs::PreparedDronePack> makeTransitionPack(const juce::String& id,
+                                                                     float level)
+{
+    auto pack = std::make_unique<still::packs::PreparedDronePack>();
+    pack->id = id;
+    pack->version = "1.0.0";
+    pack->displayName = id;
+    pack->rootPitchClass = 2;
+    auto& body = pack->banks[2][static_cast<std::size_t>(still::packs::DroneLayerRole::body)];
+    body.audio.setSize(2, 4096);
+    for (int frame = 0; frame < body.audio.getNumSamples(); ++frame)
+    {
+        const auto sample = level * std::sin(juce::MathConstants<float>::twoPi
+                                              * static_cast<float>(frame) / 1024.0f);
+        body.audio.setSample(0, frame, sample);
+        body.audio.setSample(1, frame, sample);
+    }
+    body.pitchClass = 2;
+    body.loopStartFrame = 0;
+    body.loopEndFrame = body.audio.getNumSamples();
+    body.sampleRate = 48000.0;
+    body.valid = true;
+    body.assetId = id + ".body";
+    return pack;
+}
 }
 
 int main()
 {
+    checkSamplePackLoader();
     const auto closed = still::dsp::openGains(0.0f);
     const auto half = still::dsp::openGains(0.5f);
     const auto full = still::dsp::openGains(1.0f);
@@ -207,6 +306,27 @@ int main()
         measure(block, keyTransition);
     }
     require(keyTransition.maxStep < 0.12f, "key changes crossfade without a large click");
+
+    still::dsp::DroneEngine packEngine;
+    require(packEngine.prepare(48000.0, 0.65f, 0.0f, true), "pack transition engine prepares");
+    auto firstPack = makeTransitionPack("test.pack.one", 0.12f);
+    require(packEngine.publishPreparedPack(firstPack) && firstPack == nullptr,
+            "first prepared pack publishes without audio-thread decoding");
+    Stats firstPackTransition;
+    processBlocks(packEngine, block, 14, 0.65f, 0.0f, 2, 0.0f, 1.0f, 0.0f,
+                  &firstPackTransition);
+    require(!packEngine.packTransitioning(), "first sample pack crossfade completes");
+    packEngine.reclaimRetiredPacks();
+    auto secondPack = makeTransitionPack("test.pack.two", 0.08f);
+    require(packEngine.publishPreparedPack(secondPack) && secondPack == nullptr,
+            "second prepared pack publishes after worker-side retirement");
+    Stats secondPackTransition;
+    processBlocks(packEngine, block, 14, 0.65f, 0.0f, 2, 0.0f, 1.0f, 0.0f,
+                  &secondPackTransition);
+    require(!packEngine.packTransitioning(), "back-to-back sample pack crossfade completes");
+    require(secondPackTransition.peak < 1.0f,
+            "back-to-back pack changes remain finite and below full scale");
+    packEngine.reclaimRetiredPacks();
 
     if (failures == 0)
         std::puts("STILL DSP and key-bank checks passed.");
