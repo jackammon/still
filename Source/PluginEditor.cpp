@@ -122,12 +122,12 @@ void StillAudioProcessorEditor::configureSlider(juce::Slider& slider, juce::Labe
 
     value.setJustificationType(juce::Justification::centred);
     value.setColour(juce::Label::textColourId, text);
-    value.setFont(juce::Font(14.0f, juce::Font::bold));
+    value.setFont(juce::Font(juce::FontOptions(14.0f, juce::Font::bold)));
     addAndMakeVisible(value);
 
     label.setJustificationType(juce::Justification::centred);
     label.setColour(juce::Label::textColourId, muted);
-    label.setFont(juce::Font(9.5f));
+    label.setFont(juce::Font(juce::FontOptions(9.5f)));
     label.setText(labelText, juce::dontSendNotification);
     addAndMakeVisible(label);
 }
@@ -139,10 +139,10 @@ void StillAudioProcessorEditor::paint(juce::Graphics& g)
     g.drawRoundedRectangle(getLocalBounds().toFloat().reduced(10.0f), 9.0f, 1.0f);
 
     g.setColour(text);
-    g.setFont(juce::Font(23.0f, juce::Font::bold));
+    g.setFont(juce::Font(juce::FontOptions(23.0f, juce::Font::bold)));
     g.drawText("STILL", 32, 21, 180, 34, juce::Justification::centredLeft);
     g.setColour(muted);
-    g.setFont(juce::Font(9.5f));
+    g.setFont(juce::Font(juce::FontOptions(9.5f)));
     g.drawText("AN ORGANIC DRONE INSTRUMENT", 34, 55, 250, 16, juce::Justification::centredLeft);
     g.setColour(line);
     g.drawLine(30.0f, 86.0f, static_cast<float>(getWidth() - 30), 86.0f, 1.0f);
@@ -155,7 +155,7 @@ void StillAudioProcessorEditor::paint(juce::Graphics& g)
     g.drawRoundedRectangle(446.0f, 105.0f, 386.0f, 385.0f, 10.0f, 1.0f);
 
     g.setColour(muted);
-    g.setFont(juce::Font(9.0f));
+    g.setFont(juce::Font(juce::FontOptions(9.0f)));
     g.drawText("A LAYER  /  BODY + SWIRL", 48, 121, 250, 16, juce::Justification::centredLeft);
     g.drawText("TEXTURE AND OUTPUT", 470, 121, 250, 16, juce::Justification::centredLeft);
 
@@ -164,11 +164,11 @@ void StillAudioProcessorEditor::paint(juce::Graphics& g)
     g.drawLine(470.0f, 144.0f, 808.0f, 144.0f, 1.0f);
 
     g.setColour(text);
-    g.setFont(juce::Font(12.0f));
+    g.setFont(juce::Font(juce::FontOptions(12.0f)));
     g.drawText("BODY remains present as the sound recedes.", 468, 456, 340, 18,
                juce::Justification::centredLeft);
     g.setColour(muted);
-    g.setFont(juce::Font(9.0f));
+    g.setFont(juce::Font(juce::FontOptions(9.0f)));
     g.drawText(processor_.assetsReady() ? "D SOURCE IS UNPROCESSED  ·  STEREO  ·  48 kHz"
                                        : "AUDIO BANK UNAVAILABLE",
                32, 496, 520, 14, juce::Justification::centredLeft);
