@@ -13,6 +13,7 @@ class DroneEngine
 public:
     static constexpr int keyCount = 12;
     static constexpr int packSlotCount = 2;
+    static constexpr std::size_t maxResidentAudioBytes = 1024u * 1024u * 1024u;
 
     bool prepare(double hostSampleRate, float initialOpen, float initialAir, bool initiallyRunning,
                  int initialKey = 2, float initialLevelDb = 0.0f, float initialBrightness = 1.0f,

@@ -301,13 +301,16 @@ bool DroneEngine::publishPreparedPack(std::unique_ptr<packs::PreparedDronePack>&
 {
     if (pack == nullptr)
         return false;
+    const auto bytes = pack->residentAudioBytes();
+    const auto resident = residentBytes_.load(std::memory_order_relaxed);
+    if (bytes > maxResidentAudioBytes || resident > maxResidentAudioBytes - bytes)
+        return false;
     for (auto& slot : slots_)
     {
         auto expected = SlotState::empty;
         if (!slot.state.compare_exchange_strong(expected, SlotState::loading,
                                                  std::memory_order_acq_rel))
             continue;
-        const auto bytes = pack->residentAudioBytes();
         slot.pack = std::move(pack);
         residentBytes_.fetch_add(bytes, std::memory_order_relaxed);
         slot.state.store(SlotState::ready, std::memory_order_release);

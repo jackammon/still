@@ -13,6 +13,7 @@ namespace still::packs
 namespace
 {
 constexpr const char* factoryManifestResource = "manifest_json";
+constexpr const char* factoryPackId = "com.jackammon.still.factory-stage";
 constexpr int minimumSampleRate = 8000;
 constexpr int maximumSampleRate = 192000;
 constexpr std::size_t maximumPackAudioBytes = 768u * 1024u * 1024u;
@@ -156,8 +157,17 @@ bool parseAsset(const juce::var& value, ManifestAsset& asset, juce::String& erro
         return false;
     }
 
-    if (!intProperty(value, "pitch_class", asset.pitchClass)
-        || asset.pitchClass < 0 || asset.pitchClass > 11)
+    const auto pitchClass = property(value, "pitch_class");
+    if (!pitchClass.isVoid())
+    {
+        if (!intProperty(value, "pitch_class", asset.pitchClass)
+            || asset.pitchClass < 0 || asset.pitchClass > 11)
+        {
+            error = "Asset " + asset.id + " pitch_class must be an integer from 0 through 11.";
+            return false;
+        }
+    }
+    else
     {
         int rootMidi = -1;
         if (!intProperty(value, "root_midi", rootMidi) || rootMidi < 0 || rootMidi > 127)
@@ -194,13 +204,25 @@ bool parseAsset(const juce::var& value, ManifestAsset& asset, juce::String& erro
         asset.gainDb = static_cast<float>(gain);
     }
 
-    const auto stillExtension = property(property(value, "extensions"), "still");
+    const auto assetExtensions = property(value, "extensions");
+    if (!assetExtensions.isVoid() && !object(assetExtensions))
+    {
+        error = "Asset " + asset.id + " extensions must be an object.";
+        return false;
+    }
+    const auto stillExtension = property(assetExtensions, "still");
     if (!stillExtension.isVoid() && !object(stillExtension))
     {
         error = "Asset " + asset.id + " extensions.still must be an object.";
         return false;
     }
-    stringProperty(stillExtension, "synchronized_group", asset.synchronizedGroup);
+    const auto synchronizedGroup = property(stillExtension, "synchronized_group");
+    if (!synchronizedGroup.isVoid()
+        && !stringProperty(stillExtension, "synchronized_group", asset.synchronizedGroup))
+    {
+        error = "Asset " + asset.id + " synchronized_group must be a non-empty string.";
+        return false;
+    }
 
     const auto rel = std::filesystem::path(asset.path.toStdString());
     if (rel.empty() || rel.is_absolute())
@@ -485,6 +507,11 @@ bool DronePackLoader::inspectDirectory(const juce::File& directory, InstalledPac
     ParsedManifest parsed;
     if (!readManifestFile(directory, parsed, error))
         return false;
+    if (parsed.id == factoryPackId)
+    {
+        error = "The Factory Stage Drone pack id is reserved.";
+        return false;
+    }
     result.id = parsed.id;
     result.version = parsed.version;
     result.displayName = parsed.displayName;
@@ -527,14 +554,21 @@ bool DronePackLoader::loadDirectory(const juce::File& directory,
                                     std::unique_ptr<PreparedDronePack>& result,
                                     juce::String& error)
 {
+    result.reset();
     ParsedManifest parsed;
     if (!readManifestFile(directory, parsed, error))
         return false;
+    if (parsed.id == factoryPackId)
+    {
+        error = "The Factory Stage Drone pack id is reserved.";
+        return false;
+    }
     return loadParsed(parsed, directory, false, result, error);
 }
 
 bool DronePackLoader::loadFactory(std::unique_ptr<PreparedDronePack>& result, juce::String& error)
 {
+    result.reset();
     int byteCount = 0;
     const auto* data = StillAssets::getNamedResource(factoryManifestResource, byteCount);
     if (data == nullptr || byteCount <= 0)

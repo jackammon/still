@@ -10,6 +10,7 @@ STILL reads the shared sample-pack manifest v1. Required top-level fields and as
 - BODY and SWIRL pitch coverage must match when both roles exist. At each shared pitch class they must use equal frame counts, sample rates and loop points, plus the same non-empty `extensions.still.synchronized_group`. This keeps OPEN morphing phase aligned.
 - The optional top-level `extensions.still.original_root_pitch_class` identifies the pack's preferred fallback bank. If omitted, the first BODY or SWIRL pitch class becomes the root.
 - Custom v1 assets must be mono or stereo WAV at 8–192 kHz. The reader accepts PCM or float WAV and resamples by playback-rate conversion. Keep exported performance packs at 48 kHz stereo as recommended by the shared preparation workflow.
+- A pack may use up to 768 MiB of decoded audio. A live switch also needs room for the active and incoming pack together and is rejected above a 1 GiB combined limit.
 - STILL rejects unsafe relative paths, missing or corrupt assets, invalid loops, unsupported roles, non-finite or over-full-scale samples, and BODY/SWIRL banks that cannot stay synchronized.
 
 Example extension fields:
@@ -36,7 +37,7 @@ Use an honest `source_license` and retain `provenance.md` with the pack. Record 
 
 ## Import and select
 
-The V1 importer accepts a pack directory. It validates the manifest, audio, loop bounds, path containment, provenance, and synchronized layer coverage, then copies the pack into:
+The V1 importer accepts a pack directory. It validates the manifest, audio, loop bounds, path containment, provenance, and synchronized layer coverage, then reports instrument type, pitch coverage, decoded-memory estimate, and any warnings in its success summary. It copies the pack into:
 
 ```text
 ~/Library/Application Support/STILL Instruments/Packs/<id>/<version>/

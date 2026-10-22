@@ -20,6 +20,7 @@ PACK_ROOT = Path.home() / "Library/Application Support/STILL Instruments/Packs"
 MAX_MANIFEST_BYTES = 1024 * 1024
 MAX_SAMPLE_RATE = 192000
 MIN_SAMPLE_RATE = 8000
+MAX_DECODED_PACK_BYTES = 768 * 1024 * 1024
 
 
 def fail(message: str) -> NoReturn:
@@ -38,7 +39,8 @@ def read_manifest(root: Path) -> dict:
         fail(f"Could not read manifest.json: {exc}")
     if not isinstance(manifest, dict):
         fail("manifest.json must contain a JSON object.")
-    if manifest.get("schema_version") != 1:
+    schema_version = manifest.get("schema_version")
+    if not isinstance(schema_version, int) or isinstance(schema_version, bool) or schema_version != 1:
         fail("Only sample-pack schema_version 1 is supported.")
     for key in ("id", "version", "display_name", "instrument", "source_license"):
         if not isinstance(manifest.get(key), str) or not manifest[key].strip():
@@ -156,10 +158,12 @@ def wav_info(path: Path) -> tuple[int, int, int, float]:
     return frames, channels, rate, peak
 
 
-def validate_assets(root: Path, manifest: dict) -> None:
+def validate_assets(root: Path, manifest: dict) -> dict:
     root = root.resolve(strict=True)
     ids: set[str] = set()
     by_pitch: dict[int, dict[str, tuple[dict, int, int, float, str]]] = {}
+    air_pitches: set[int] = set()
+    estimated_memory = 0
     for asset in manifest["assets"]:
         if not isinstance(asset, dict):
             fail("Every asset entry must be a JSON object.")
@@ -186,10 +190,20 @@ def validate_assets(root: Path, manifest: dict) -> None:
         if not resolved.is_file() or resolved.suffix.lower() != ".wav":
             fail(f"Pack v1 STILL assets must be WAV files: {raw_path}")
         pitch = asset.get("pitch_class")
-        if pitch is None and isinstance(asset.get("root_midi"), int):
-            pitch = asset["root_midi"] % 12
+        if pitch is None:
+            root_midi = asset.get("root_midi")
+            if isinstance(root_midi, int) and not isinstance(root_midi, bool) and 0 <= root_midi <= 127:
+                pitch = root_midi % 12
         if not isinstance(pitch, int) or isinstance(pitch, bool) or not 0 <= pitch <= 11:
             fail(f"Asset {asset_id} requires pitch_class 0–11 or root_midi.")
+        if "pitch_class" in asset and (not isinstance(asset["pitch_class"], int)
+                                        or isinstance(asset["pitch_class"], bool)
+                                        or not 0 <= asset["pitch_class"] <= 11):
+            fail(f"Asset {asset_id} pitch_class must be an integer from 0 through 11.")
+        gain = asset.get("gain_db", 0.0)
+        if (isinstance(gain, bool) or not isinstance(gain, (int, float))
+                or gain < -60.0 or gain > 12.0 or not math.isfinite(gain)):
+            fail(f"Asset {asset_id} gain_db must be finite and between -60 and +12.")
         loop_start = asset.get("loop_start_frame")
         loop_end = asset.get("loop_end_frame")
         xfade = asset.get("loop_xfade_frames", 0)
@@ -200,13 +214,27 @@ def validate_assets(root: Path, manifest: dict) -> None:
         frames, _, sample_rate, peak = wav_info(resolved)
         if loop_end > frames:
             fail(f"Asset {asset_id} loop_end_frame exceeds its WAV length.")
+        estimated_memory += frames * 2 * 4
+        if estimated_memory > MAX_DECODED_PACK_BYTES:
+            fail("Pack decoded audio exceeds STILL's 768 MiB per-pack memory limit.")
+        asset_extensions = asset.get("extensions", {})
+        if not isinstance(asset_extensions, dict):
+            fail(f"Asset {asset_id} extensions must be an object.")
+        still_ext = asset_extensions.get("still", {})
+        if not isinstance(still_ext, dict):
+            fail(f"Asset {asset_id} extensions.still must be an object.")
+        group = still_ext.get("synchronized_group", "")
+        if not isinstance(group, str):
+            fail(f"Asset {asset_id} synchronized_group must be a string.")
         if role in ("drone_body", "drone_swirl"):
-            still_ext = asset.get("extensions", {}).get("still", {})
-            group = still_ext.get("synchronized_group", "") if isinstance(still_ext, dict) else ""
             bank = by_pitch.setdefault(pitch, {})
             if role in bank:
                 fail(f"Duplicate STILL role/pitch_class entry: {role} / {pitch}.")
             bank[role] = (asset, frames, sample_rate, peak, group)
+        elif role == "drone_air":
+            if pitch in air_pitches:
+                fail(f"Duplicate STILL role/pitch_class entry: {role} / {pitch}.")
+            air_pitches.add(pitch)
 
     body_pitches = {pitch for pitch, bank in by_pitch.items() if "drone_body" in bank}
     swirl_pitches = {pitch for pitch, bank in by_pitch.items() if "drone_swirl" in bank}
@@ -224,6 +252,24 @@ def validate_assets(root: Path, manifest: dict) -> None:
                 or any(body.get(field, 0) != swirl.get(field, 0) for field in fields)
                 or body_group != swirl_group or not body_group):
             fail(f"BODY and SWIRL need matching loop metadata and synchronized_group at pitch_class {pitch}.")
+    warnings = []
+    warnings.append("Review source_license and provenance.md for the intended use; this importer cannot grant redistribution rights.")
+    if not air_pitches:
+        warnings.append("No AIR assets are provided; the AIR control will have no effect.")
+    if body_pitches and not swirl_pitches:
+        warnings.append("No SWIRL assets are provided; OPEN will control BODY only.")
+    if swirl_pitches and not body_pitches:
+        warnings.append("No BODY assets are provided; OPEN will control SWIRL only.")
+    if estimated_memory > 256 * 1024 * 1024:
+        warnings.append("This pack is large; pack switching may temporarily hold active and incoming audio in memory.")
+    return {
+        "instrument": manifest["instrument"],
+        "asset_count": len(manifest["assets"]),
+        "body_swirl_pitch_classes": sorted(body_pitches | swirl_pitches),
+        "air_pitch_classes": sorted(air_pitches),
+        "estimated_decoded_bytes": estimated_memory,
+        "warnings": warnings,
+    }
 
 
 def hash_file(path: Path) -> str:
@@ -250,7 +296,7 @@ def write_checksums(root: Path) -> None:
     (root / "importer-checksums.sha256").write_text("\n".join(entries) + "\n", encoding="utf-8")
 
 
-def import_pack(source: Path, pack_root: Path) -> Path:
+def normalize_source_directory(source: Path) -> Path:
     if source.is_symlink():
         fail("Pack directory may not be a symlink.")
     source = source.resolve(strict=True)
@@ -258,11 +304,17 @@ def import_pack(source: Path, pack_root: Path) -> Path:
         fail("Source must be a directory containing manifest.json.")
     if any(path.is_symlink() for path in (source, *source.rglob("*"))):
         fail("Pack directory may not contain symlinks.")
-    manifest = read_manifest(source)
-    validate_assets(source, manifest)
+    return source
+
+
+def install_validated_pack(source: Path, pack_root: Path, manifest: dict) -> Path:
     pack_id, version = manifest["id"], manifest["version"]
+    if pack_id == "com.jackammon.still.factory-stage":
+        fail("This pack id is reserved for the embedded Factory Stage Drone.")
     identity = content_digest(source)
     target = pack_root / pack_id / version
+    if target.is_symlink() or target.parent.is_symlink():
+        fail(f"Installed destination may not be a symlink: {target}")
     if target.exists():
         if target.is_dir() and any(path.is_symlink() for path in target.rglob("*")):
             fail(f"Installed destination contains symlinks: {target}")
@@ -282,6 +334,13 @@ def import_pack(source: Path, pack_root: Path) -> Path:
     return target
 
 
+def import_pack(source: Path, pack_root: Path) -> Path:
+    source = normalize_source_directory(source)
+    manifest = read_manifest(source)
+    validate_assets(source, manifest)
+    return install_validated_pack(source, pack_root, manifest)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("pack_directory", type=Path, help="STILL pack directory with manifest.json and provenance.md")
@@ -289,10 +348,24 @@ def main() -> int:
                         help=f"install root (default: {PACK_ROOT})")
     args = parser.parse_args()
     try:
-        target = import_pack(args.pack_directory, args.pack_root.expanduser())
+        source = normalize_source_directory(args.pack_directory)
+        manifest = read_manifest(source)
+        report = validate_assets(source, manifest)
+        target = install_validated_pack(source, args.pack_root.expanduser(), manifest)
     except (OSError, ValueError, json.JSONDecodeError) as exc:
         print(f"Import failed: {exc}", file=sys.stderr)
         return 1
+    print(f"Instrument: {report['instrument'].upper()}")
+    print(f"Pack: {manifest['display_name']} ({manifest['id']} {manifest['version']})")
+    print(f"Assets: {report['asset_count']}")
+    body_swirl = ", ".join(str(pitch) for pitch in report["body_swirl_pitch_classes"]) or "none"
+    air = ", ".join(str(pitch) for pitch in report["air_pitch_classes"]) or "none"
+    print(f"BODY/SWIRL pitch classes: {body_swirl}")
+    print(f"AIR pitch classes: {air}")
+    memory_mib = report["estimated_decoded_bytes"] / (1024 * 1024)
+    print(f"Approximate decoded audio memory: {memory_mib:.1f} MiB")
+    for warning in report["warnings"]:
+        print(f"Warning: {warning}")
     print(f"Installed pack: {target}")
     return 0
 

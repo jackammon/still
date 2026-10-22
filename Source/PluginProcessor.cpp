@@ -241,6 +241,15 @@ void StillAudioProcessor::runPackWorker()
             setPackStatus("Pack unavailable: " + error);
             continue;
         }
+        const auto candidateBytes = prepared->residentAudioBytes();
+        const auto residentBytes = engine_.residentAudioBytes();
+        if (candidateBytes > still::dsp::DroneEngine::maxResidentAudioBytes
+            || residentBytes > still::dsp::DroneEngine::maxResidentAudioBytes - candidateBytes)
+        {
+            packUnavailable_.store(true, std::memory_order_release);
+            setPackStatus("Pack switch exceeds STILL's 1 GiB transition-memory limit.");
+            continue;
+        }
 
         while (!engine_.assetsReady() && requestIsCurrent())
         {

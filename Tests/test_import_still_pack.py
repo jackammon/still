@@ -67,6 +67,11 @@ class ImportStillPackTests(unittest.TestCase):
             directory = Path(temporary)
             source = make_pack(directory / "source")
             pack_root = directory / "installed"
+            report = IMPORTER.validate_assets(source, IMPORTER.read_manifest(source))
+            self.assertEqual(report["instrument"], "still")
+            self.assertEqual(report["body_swirl_pitch_classes"], [2])
+            self.assertEqual(report["air_pitch_classes"], [])
+            self.assertGreater(report["estimated_decoded_bytes"], 0)
             installed = IMPORTER.import_pack(source, pack_root)
             self.assertTrue((installed / "importer-checksums.sha256").is_file())
             self.assertTrue((installed / "provenance.md").is_file())
