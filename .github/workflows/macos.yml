@@ -40,4 +40,7 @@ jobs:
           destination="$HOME/Library/Audio/Plug-Ins/Components/STILL.component"
           mkdir -p "$(dirname "$destination")"
           ditto "$component" "$destination"
+          # AudioComponentRegistrar may retain a stale scan result after installation.
+          killall -9 AudioComponentRegistrar 2>/dev/null || true
+          sleep 5
           auval -v aumu Stil JAKm
