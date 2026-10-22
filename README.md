@@ -4,6 +4,8 @@ STILL is a private macOS Audio Unit instrument for organic, long-form drone text
 
 The current instrument exposes KEY, OPEN, AIR, BRIGHTNESS, MOTION, LEVEL, and START to host automation. It accepts MIDI input for use as a MainStage/Logic instrument, but the drone starts without held notes. Host parameter mapping is handled through the Audio Unit's exposed parameters.
 
+STILL also supports private, interchangeable sample packs using the shared manifest v1 contract. Import a prepared directory with `python3 tools/import_still_pack.py /path/to/PackDirectory`, then select it from the plugin's pack menu. The embedded Stage-cleaned factory sound remains the default for older presets. See [docs/SAMPLE_PACKS.md](docs/SAMPLE_PACKS.md) for the STILL extensions, provenance rules, install path, and rollback steps.
+
 ## Included audio
 
 - `Assets/Stage` contains the supplied WAV sources and reference MP3s, preserved unchanged.

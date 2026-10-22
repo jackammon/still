@@ -8,6 +8,8 @@ Automated local checks currently cover:
 - OPEN gain curves, direct 48 kHz D output against the supplied full reference, and AIR independence.
 - Every key's A loop boundary, key changes, LEVEL gain, BRIGHTNESS smoothing, and MOTION behavior.
 - Long D playback, safe peak range, mono output, and a 44.1 kHz host rate.
+- Shared v1 pack manifest and asset validation, synchronized BODY/SWIRL pitch coverage, and directory import idempotence/path safety.
+- External-pack loader path containment and two consecutive pack transitions with worker-side retirement.
 
 GitHub Actions builds the AU and Standalone targets, runs these checks, and runs Apple's `auval` on the AU component.
 

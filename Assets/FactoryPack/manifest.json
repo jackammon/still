@@ -1,0 +1,557 @@
+{
+  "schema_version": 1,
+  "id": "com.jackammon.still.factory-stage",
+  "version": "1.0.0",
+  "display_name": "Factory Stage Drone",
+  "instrument": "still",
+  "source_license": "User-provided Stage-cleaned sample kit; no redistribution license supplied; private use only",
+  "extensions": {
+    "still": {
+      "original_root_pitch_class": 2,
+      "original_root_note": "D",
+      "factory_pack": true
+    }
+  },
+  "assets": [
+    {
+      "id": "still.body.d",
+      "path": "audio/D_A_BODY_STAGE_48k.wav",
+      "role": "drone_body",
+      "pitch_class": 2,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 0,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.d",
+      "path": "audio/D_A_SWIRL_STAGE_48k.wav",
+      "role": "drone_swirl",
+      "pitch_class": 2,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 0,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.d",
+      "path": "audio/D_C_AIR_STAGE_48k.wav",
+      "role": "drone_air",
+      "pitch_class": 2,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 0,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.c",
+      "path": "audio/C_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 0,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.c",
+      "path": "audio/C_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 0,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.c",
+      "path": "audio/C_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 0,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.cs",
+      "path": "audio/Cs_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 1,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.cs",
+      "path": "audio/Cs_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 1,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.cs",
+      "path": "audio/Cs_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 1,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.ds",
+      "path": "audio/Ds_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 3,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.ds",
+      "path": "audio/Ds_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 3,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.ds",
+      "path": "audio/Ds_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 3,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.e",
+      "path": "audio/E_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 4,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.e",
+      "path": "audio/E_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 4,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.e",
+      "path": "audio/E_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 4,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.f",
+      "path": "audio/F_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 5,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.f",
+      "path": "audio/F_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 5,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.f",
+      "path": "audio/F_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 5,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.fs",
+      "path": "audio/Fs_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 6,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.fs",
+      "path": "audio/Fs_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 6,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.fs",
+      "path": "audio/Fs_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 6,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.g",
+      "path": "audio/G_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 7,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.g",
+      "path": "audio/G_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 7,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.g",
+      "path": "audio/G_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 7,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.gs",
+      "path": "audio/Gs_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 8,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.gs",
+      "path": "audio/Gs_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 8,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.gs",
+      "path": "audio/Gs_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 8,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.a",
+      "path": "audio/A_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 9,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.a",
+      "path": "audio/A_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 9,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.a",
+      "path": "audio/A_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 9,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.as",
+      "path": "audio/As_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 10,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.as",
+      "path": "audio/As_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 10,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.as",
+      "path": "audio/As_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 10,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    },
+    {
+      "id": "still.body.b",
+      "path": "audio/B_BODY.flac",
+      "role": "drone_body",
+      "pitch_class": 11,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.swirl.b",
+      "path": "audio/B_SWIRL.flac",
+      "role": "drone_swirl",
+      "pitch_class": 11,
+      "loop_start_frame": 0,
+      "loop_end_frame": 276000,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "a"
+        }
+      }
+    },
+    {
+      "id": "still.air.b",
+      "path": "audio/B_AIR.flac",
+      "role": "drone_air",
+      "pitch_class": 11,
+      "loop_start_frame": 0,
+      "loop_end_frame": 249600,
+      "loop_xfade_frames": 240,
+      "gain_db": 0.0,
+      "extensions": {
+        "still": {
+          "synchronized_group": "air"
+        }
+      }
+    }
+  ]
+}
