@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<STILLPreset version="1" name="Default D" key="D">
+  <Parameter id="open" value="0.45"/>
+  <Parameter id="air" value="0.20"/>
+  <Parameter id="start" value="1"/>
+  <Notes>Factory reference values for the D-only milestone. Host state uses AudioProcessorValueTreeState.</Notes>
+</STILLPreset>

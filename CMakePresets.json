@@ -1,0 +1,16 @@
+{
+  "version": 3,
+  "cmakeMinimumRequired": { "major": 3, "minor": 22, "patch": 0 },
+  "configurePresets": [{
+    "name": "macos-release",
+    "displayName": "macOS Release",
+    "generator": "Xcode",
+    "binaryDir": "${sourceDir}/out/build/macos-release",
+    "cacheVariables": { "CMAKE_OSX_DEPLOYMENT_TARGET": "12.0", "STILL_BUILD_TESTS": "ON" }
+  }],
+  "buildPresets": [{ "name": "macos-release", "configurePreset": "macos-release", "configuration": "Release" }],
+  "testPresets": [{
+    "name": "macos-release", "configurePreset": "macos-release", "configuration": "Release",
+    "output": { "outputOnFailure": true }
+  }]
+}
