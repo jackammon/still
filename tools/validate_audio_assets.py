@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 """Check immutable source PCM, loop endpoints, and BODY/SWIRL reconstruction."""
+import hashlib
+import json
 import sys
 import wave
 from pathlib import Path
@@ -19,6 +21,21 @@ def read_pcm24(path):
 
 def check(ok, message):
     if not ok: raise AssertionError(message)
+
+def read_flac_streaminfo(path):
+    with path.open("rb") as source:
+        check(source.read(4)==b"fLaC", f"{path.name}: missing FLAC signature")
+        header=source.read(4)
+        check(len(header)==4 and (header[0]&0x7f)==0, f"{path.name}: missing STREAMINFO")
+        size=int.from_bytes(header[1:],"big")
+        check(size==34, f"{path.name}: invalid STREAMINFO size")
+        info=source.read(size)
+    packed=int.from_bytes(info[10:18],"big")
+    return {"sample_rate":packed>>44, "channels":((packed>>41)&7)+1,
+            "bits_per_sample":((packed>>36)&31)+1, "frames":packed&((1<<36)-1)}
+
+def sha256(path):
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 def main():
     root = Path(sys.argv[1]) if len(sys.argv)>1 else Path(__file__).resolve().parents[1]/"Assets"
@@ -40,5 +57,24 @@ def main():
     for name in ("REFERENCE_stage_morph_A_only.mp3","REFERENCE_stage_morph_A_plus_C.mp3"):
         check((root/"References"/name).is_file(), f"missing listening reference {name}")
     print("Listening MP3 references found; not used as loop sources.")
+
+    manifest_path=root/"Banks"/"BANK_MANIFEST.json"
+    manifest=json.loads(manifest_path.read_text(encoding="utf-8"))
+    check(manifest.get("reference_key")=="D" and manifest.get("reference_samples_are_unprocessed") is True,
+          "bank manifest must identify the untouched D reference bank")
+    rendered={(item["key"],item["stem"]):item for item in manifest.get("derived_samples",[])}
+    expected_keys=("C","Cs","Ds","E","F","Fs","G","Gs","A","As","B")
+    for key in expected_keys:
+        for stem,frames in (("BODY",276000),("SWIRL",276000),("AIR",249600)):
+            item=rendered.get((key,stem))
+            check(item is not None, f"pitch bank is missing {key} {stem}")
+            path=root.parent/item["path"]
+            metadata=read_flac_streaminfo(path)
+            check(metadata=={"sample_rate":48000,"channels":2,"bits_per_sample":24,"frames":frames},
+                  f"{path.name}: pitch bank must remain stereo 48 kHz 24-bit with {frames} frames")
+            check(sha256(path)==item["sha256"], f"{path.name}: SHA-256 differs from the bank manifest")
+        check(rendered[(key,"BODY")]["frames"]==rendered[(key,"SWIRL")]["frames"],
+              f"{key}: BODY and SWIRL are not sample-aligned")
+    print("Alternate-key FLAC banks: all 11 keys, stereo 48 kHz 24-bit, equal BODY/SWIRL frames and verified SHA-256.")
 
 if __name__=="__main__": main()

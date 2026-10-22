@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<STILLPreset version="1" name="Default D" key="D">
+<STILLPreset version="2" name="Default D" key="D">
+  <Parameter id="key" value="2"/>
   <Parameter id="open" value="0.45"/>
   <Parameter id="air" value="0.20"/>
+  <Parameter id="brightness" value="1.0"/>
+  <Parameter id="motion" value="0.0"/>
+  <Parameter id="level" value="0.0"/>
   <Parameter id="start" value="1"/>
-  <Notes>Factory reference values for the D-only milestone. Host state uses AudioProcessorValueTreeState.</Notes>
+  <Notes>D is selected. The initial AIR setting is quiet; set AIR to 0 and OPEN to 1 for the direct full-reference configuration.</Notes>
 </STILLPreset>

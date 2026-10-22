@@ -1,5 +1,18 @@
 # Validation status
 
-First-milestone automated checks cover stereo 48 kHz 24-bit WAVs, matching BODY/SWIRL/FULL lengths, exact first/last frames, reconstruction within two PCM counts, OPEN gain endpoints and midpoint, embedded decoding, finite stereo output, safe full-open peak, a 10-second loop, AIR independence, 44.1 kHz operation, and mono output.
+Automated local checks currently cover:
 
-Later work must validate state restore, long-duration stability, CPU/memory use, AU loading in Logic/MainStage, MIDI mapping, and the user's subjective listening and PA test. A build or automated check does not imply MainStage or PA acceptance.
+- Original WAV format, stereo channel count, sample rate, exact loop endpoint frames, and BODY + SWIRL reconstruction against the full D reference.
+- All 33 alternate-key FLACs: hashes, 48 kHz stereo 24-bit metadata, and exact frame counts.
+- Embedded decoding for all 12 keys and stable preloaded-memory size across key changes.
+- OPEN gain curves, direct 48 kHz D output against the supplied full reference, and AIR independence.
+- Every key's A loop boundary, key changes, LEVEL gain, BRIGHTNESS smoothing, and MOTION behavior.
+- Long D playback, safe peak range, mono output, and a 44.1 kHz host rate.
+
+GitHub Actions builds the AU and Standalone targets, runs these checks, and runs Apple's `auval` on the AU component.
+
+## Remaining listening and host checks
+
+Automated checks do not establish that the alternate-key audio sounds natural, that the interface feels right during performance, or that a MainStage concert behaves correctly. The current version has not yet been loaded into the user's open MainStage concert. Do not alter that concert. The user still needs to evaluate key-bank timbre, noise, loop character, automation feel, and the interface, followed by a rehearsal/PA soundcheck. No live PA test is claimed.
+
+No performance-ready release tag has been created.

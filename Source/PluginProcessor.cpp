@@ -1,13 +1,31 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
+#include <cmath>
 #include <memory>
-namespace { constexpr auto openParameter = "open"; constexpr auto airParameter = "air"; constexpr auto startParameter = "start"; }
+namespace
+{
+constexpr auto openParameter = "open";
+constexpr auto airParameter = "air";
+constexpr auto startParameter = "start";
+constexpr auto keyParameter = "key";
+constexpr auto levelParameter = "level";
+constexpr auto brightnessParameter = "brightness";
+constexpr auto motionParameter = "motion";
+const juce::StringArray keyNames{"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+}
 juce::AudioProcessorValueTreeState::ParameterLayout StillAudioProcessor::createParameterLayout()
 {
     juce::AudioProcessorValueTreeState::ParameterLayout layout;
     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{openParameter, 1}, "OPEN", 0.0f, 1.0f, 0.45f));
     layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{airParameter, 1}, "AIR", 0.0f, 1.0f, 0.20f));
     layout.add(std::make_unique<juce::AudioParameterBool>(juce::ParameterID{startParameter, 1}, "START", true));
+    layout.add(std::make_unique<juce::AudioParameterChoice>(juce::ParameterID{keyParameter, 1}, "KEY", keyNames, 2));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{levelParameter, 1}, "LEVEL",
+        juce::NormalisableRange<float>{-36.0f, 6.0f, 0.1f}, 0.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{brightnessParameter, 1}, "BRIGHTNESS",
+        0.0f, 1.0f, 1.0f));
+    layout.add(std::make_unique<juce::AudioParameterFloat>(juce::ParameterID{motionParameter, 1}, "MOTION",
+        0.0f, 1.0f, 0.0f));
     return layout;
 }
 StillAudioProcessor::StillAudioProcessor()
@@ -18,7 +36,11 @@ void StillAudioProcessor::prepareToPlay(double rate, int)
     const auto open = parameters_.getRawParameterValue(openParameter)->load();
     const auto air = parameters_.getRawParameterValue(airParameter)->load();
     const auto running = parameters_.getRawParameterValue(startParameter)->load() >= 0.5f;
-    engine_.prepare(rate, open, air, running);
+    const auto key = static_cast<int>(std::lround(parameters_.getRawParameterValue(keyParameter)->load()));
+    const auto level = parameters_.getRawParameterValue(levelParameter)->load();
+    const auto brightness = parameters_.getRawParameterValue(brightnessParameter)->load();
+    const auto motion = parameters_.getRawParameterValue(motionParameter)->load();
+    engine_.prepare(rate, open, air, running, key, level, brightness, motion);
 }
 void StillAudioProcessor::releaseResources() {}
 bool StillAudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const
@@ -33,7 +55,11 @@ void StillAudioProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::M
     const auto open = parameters_.getRawParameterValue(openParameter)->load(std::memory_order_relaxed);
     const auto air = parameters_.getRawParameterValue(airParameter)->load(std::memory_order_relaxed);
     const auto running = parameters_.getRawParameterValue(startParameter)->load(std::memory_order_relaxed) >= 0.5f;
-    engine_.process(buffer, open, air, running);
+    const auto key = static_cast<int>(std::lround(parameters_.getRawParameterValue(keyParameter)->load(std::memory_order_relaxed)));
+    const auto level = parameters_.getRawParameterValue(levelParameter)->load(std::memory_order_relaxed);
+    const auto brightness = parameters_.getRawParameterValue(brightnessParameter)->load(std::memory_order_relaxed);
+    const auto motion = parameters_.getRawParameterValue(motionParameter)->load(std::memory_order_relaxed);
+    engine_.process(buffer, open, air, running, key, level, brightness, motion);
 }
 juce::AudioProcessorEditor* StillAudioProcessor::createEditor() { return new StillAudioProcessorEditor(*this); }
 void StillAudioProcessor::getStateInformation(juce::MemoryBlock& data)

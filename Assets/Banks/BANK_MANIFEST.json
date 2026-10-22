@@ -1,0 +1,397 @@
+{
+  "format_version": 1,
+  "reference_key": "D",
+  "reference_samples_are_unprocessed": true,
+  "sample_rate": 48000,
+  "rubber_band_version": "4.0.0",
+  "rubber_band_options": [
+    "-3",
+    "-D <original duration>",
+    "-p <semitones>"
+  ],
+  "ffmpeg_version": "ffmpeg version 7.1.1 Copyright (c) 2000-2025 the FFmpeg developers",
+  "sources": {
+    "BODY": {
+      "path": "Assets/Stage/D_A_BODY_STAGE_48k.wav",
+      "sha256": "d7fd0407c6382739eaf106a160ef3303e1e469f9dd69fd7402c12d4112dbd96c"
+    },
+    "SWIRL": {
+      "path": "Assets/Stage/D_A_SWIRL_STAGE_48k.wav",
+      "sha256": "2fb14c5a153858568c90659a47daefbcbae0b880cec4e451f21e0d5e5880204f"
+    },
+    "AIR": {
+      "path": "Assets/Stage/D_C_AIR_STAGE_48k.wav",
+      "sha256": "1d6e78952725c46272ec49eeafcf3ad0c707ae11b44307e3b8e59f1d951810ca"
+    }
+  },
+  "derived_samples": [
+    {
+      "key": "C",
+      "semitones_from_D": -2,
+      "stem": "BODY",
+      "path": "Assets/Banks/C_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "e0c890f36453f8ca23285d5f731341c39012b5a0a36864dcf932a5978ad1870c"
+    },
+    {
+      "key": "C",
+      "semitones_from_D": -2,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/C_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "906e7a7aae19f29b30d0d3d7bb0dc84d3f328d02c0d3f148c5b77855837922ba"
+    },
+    {
+      "key": "C",
+      "semitones_from_D": -2,
+      "stem": "AIR",
+      "path": "Assets/Banks/C_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "e539dddd65a56b186f7f8ef2724f3d3a45d8c6ab2efaadfd6dccec1ae5924832"
+    },
+    {
+      "key": "Cs",
+      "semitones_from_D": -1,
+      "stem": "BODY",
+      "path": "Assets/Banks/Cs_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "ce65cad099a30e678803bf56d0848f97163181094ee792825696c0e945fdba72"
+    },
+    {
+      "key": "Cs",
+      "semitones_from_D": -1,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/Cs_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "ee75afbdff68e920188180f22ab03c805b4fd48ddd33144e1781d9f761e50eeb"
+    },
+    {
+      "key": "Cs",
+      "semitones_from_D": -1,
+      "stem": "AIR",
+      "path": "Assets/Banks/Cs_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "1ae9d7c39d34f4f23017fa0b33a91ec74389616aab6330f6d88f5f9ae8972d89"
+    },
+    {
+      "key": "Ds",
+      "semitones_from_D": 1,
+      "stem": "BODY",
+      "path": "Assets/Banks/Ds_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "c8277fac66ff0750ca6b9c1224a074ace4e9f12c55e9b723029cf35dc79e9622"
+    },
+    {
+      "key": "Ds",
+      "semitones_from_D": 1,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/Ds_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "540e6fe1639b56c89ee6e263c76556ac88bcad57c9dafd18f6d3da160e8c05f0"
+    },
+    {
+      "key": "Ds",
+      "semitones_from_D": 1,
+      "stem": "AIR",
+      "path": "Assets/Banks/Ds_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "0d415e0d0c28b422b1ec31e3211ddd71f81628e948444353fc5406f362750b8a"
+    },
+    {
+      "key": "E",
+      "semitones_from_D": 2,
+      "stem": "BODY",
+      "path": "Assets/Banks/E_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "38acda6dab5d16504c0d2716e00e0744a8d96badd16bcda5d51c888578612652"
+    },
+    {
+      "key": "E",
+      "semitones_from_D": 2,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/E_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "e1550ed919b51afc97bacd6e43827796eb20b7c51891b72e19e46aa840c17e08"
+    },
+    {
+      "key": "E",
+      "semitones_from_D": 2,
+      "stem": "AIR",
+      "path": "Assets/Banks/E_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "ef41a1647d64c7af56f55903773389332d2dd1fde45545cdbbd6000289152d7a"
+    },
+    {
+      "key": "F",
+      "semitones_from_D": 3,
+      "stem": "BODY",
+      "path": "Assets/Banks/F_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "a5ced178c56bf82223b92427b3ba6b343c033d05fa0fb659db5f476cbc194cd0"
+    },
+    {
+      "key": "F",
+      "semitones_from_D": 3,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/F_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "8761043496635d0eecdb0434a2bbddd4ee8b4ddf4f266f60fd5bd28b5f35fbd8"
+    },
+    {
+      "key": "F",
+      "semitones_from_D": 3,
+      "stem": "AIR",
+      "path": "Assets/Banks/F_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "e8c588dc340d4b9270e7f2e9f07cedb1e5f1ebf823531d4752d5e0d9c84288fd"
+    },
+    {
+      "key": "Fs",
+      "semitones_from_D": 4,
+      "stem": "BODY",
+      "path": "Assets/Banks/Fs_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "9c4ec1326229be1bd3e48db4b87f1268543cee3d5ceadb8d7f661352d3aeaa8f"
+    },
+    {
+      "key": "Fs",
+      "semitones_from_D": 4,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/Fs_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "29a6690828e83d0cf8a98877705687db818a6ed581e73126573494ceaea7eb91"
+    },
+    {
+      "key": "Fs",
+      "semitones_from_D": 4,
+      "stem": "AIR",
+      "path": "Assets/Banks/Fs_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "99d67ca600adfbe870ec25f32e988246ceb8b77c2fb24ab75b3b504c35522874"
+    },
+    {
+      "key": "G",
+      "semitones_from_D": 5,
+      "stem": "BODY",
+      "path": "Assets/Banks/G_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "135b2f8c150468d1f8ba2e105e5870a73b57a09a01f827ef3426db993e265a5e"
+    },
+    {
+      "key": "G",
+      "semitones_from_D": 5,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/G_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "336c4ff1f0b2c1d31279970b7c51c37cd3875cf9cb2ae514fa1dd03e489ce131"
+    },
+    {
+      "key": "G",
+      "semitones_from_D": 5,
+      "stem": "AIR",
+      "path": "Assets/Banks/G_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "d9fe23f2226fcf66a1ae2ae42422ef72dbeae08415f216a1c1bb5a6c4fbe4202"
+    },
+    {
+      "key": "Gs",
+      "semitones_from_D": 6,
+      "stem": "BODY",
+      "path": "Assets/Banks/Gs_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "398c346114a3e0ecaee7b4f300aa68c252ba88afe24e99a53a1c3636384f380e"
+    },
+    {
+      "key": "Gs",
+      "semitones_from_D": 6,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/Gs_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "e5e051664c55fa484b7aa743cce349e841084a952b06376ab7eca99c977fe789"
+    },
+    {
+      "key": "Gs",
+      "semitones_from_D": 6,
+      "stem": "AIR",
+      "path": "Assets/Banks/Gs_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "725b674e7abd1e55f3a0deba3cf4550139992cce20ef97bf2662650eeb14f99c"
+    },
+    {
+      "key": "A",
+      "semitones_from_D": 7,
+      "stem": "BODY",
+      "path": "Assets/Banks/A_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "54ed4c33a6d8766c162a71236f64080baaa6297051fa5067503091049ffa3db6"
+    },
+    {
+      "key": "A",
+      "semitones_from_D": 7,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/A_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "dfbf8c6ca8f756eff1fccf04fdc8ea2cce6bca1a1e3d12213e1c9e327909601f"
+    },
+    {
+      "key": "A",
+      "semitones_from_D": 7,
+      "stem": "AIR",
+      "path": "Assets/Banks/A_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "152ecf6d98ae54b06f83626bcd80dbcfd92a771ccc1610fc23a6ba6a7c4ac670"
+    },
+    {
+      "key": "As",
+      "semitones_from_D": 8,
+      "stem": "BODY",
+      "path": "Assets/Banks/As_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "2ce5fa8075acc9e07bb11ac8216a5642d4b6fa61a91b70e3b1b80a66677d1980"
+    },
+    {
+      "key": "As",
+      "semitones_from_D": 8,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/As_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "acb093552037d5ab4ab6f1811bab8511b208629860cee77371dc69b5023ed66c"
+    },
+    {
+      "key": "As",
+      "semitones_from_D": 8,
+      "stem": "AIR",
+      "path": "Assets/Banks/As_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "32b08b6c5601745c6201e993ab12c40568c260cf0ea0b2f35dad0b7e2fe8f342"
+    },
+    {
+      "key": "B",
+      "semitones_from_D": 9,
+      "stem": "BODY",
+      "path": "Assets/Banks/B_BODY.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "32549f94d6f795ed3d331345ab074bf2505de143bdfb2809c1b3090441fea7d8"
+    },
+    {
+      "key": "B",
+      "semitones_from_D": 9,
+      "stem": "SWIRL",
+      "path": "Assets/Banks/B_SWIRL.flac",
+      "frames": 276000,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "7c29b87403a0c8dac015dfe72a2d8f5c66eaaf37ca23acc64aa3f6b37bae4d24"
+    },
+    {
+      "key": "B",
+      "semitones_from_D": 9,
+      "stem": "AIR",
+      "path": "Assets/Banks/B_AIR.flac",
+      "frames": 249600,
+      "sample_rate": 48000,
+      "channels": 2,
+      "bits_per_sample": 24,
+      "sha256": "98ee74836d70ae31d6134d17f3c6db03566f64481be437291a0b1a46e45559d0"
+    }
+  ],
+  "notes": [
+    "The D source bank is copied from the authoritative Stage-cleaned WAV files without pitch processing.",
+    "Each derived BODY/SWIRL pair has the same duration, frame count, sample rate, and Rubber Band settings.",
+    "Alternate keys require listening evaluation for timbre and loop behavior before live use."
+  ]
+}

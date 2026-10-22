@@ -1,3 +1,3 @@
 # Presets
 
-Factory reference values are checked in as text for review. The plugin exposes OPEN, AIR, and START to host automation and saves them in host state. Direct preset import and export are a later milestone.
+`Factory/Default D.preset` documents the initial control values for review. The plugin exposes KEY, OPEN, AIR, BRIGHTNESS, MOTION, LEVEL, and START to host automation and saves/restores them through AudioProcessorValueTreeState. Host state serialization is supported; direct import/export of the standalone text preset file is not implemented yet.

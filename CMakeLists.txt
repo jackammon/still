@@ -15,13 +15,16 @@ FetchContent_Declare(JUCE
     GIT_SHALLOW TRUE)
 FetchContent_MakeAvailable(JUCE)
 find_package(Python3 REQUIRED COMPONENTS Interpreter)
+file(GLOB STILL_PITCH_BANK_ASSETS CONFIGURE_DEPENDS
+    "${CMAKE_CURRENT_SOURCE_DIR}/Assets/Banks/*.flac")
 juce_add_binary_data(STILLAssets
     HEADER_NAME StillAssets.h
     NAMESPACE StillAssets
     SOURCES
         Assets/Stage/D_A_BODY_STAGE_48k.wav
         Assets/Stage/D_A_SWIRL_STAGE_48k.wav
-        Assets/Stage/D_C_AIR_STAGE_48k.wav)
+        Assets/Stage/D_C_AIR_STAGE_48k.wav
+        ${STILL_PITCH_BANK_ASSETS})
 add_library(StillDsp STATIC
     Source/Dsp/DroneEngine.cpp Source/Dsp/DroneMath.h Source/Dsp/DroneEngine.h)
 target_include_directories(StillDsp PUBLIC Source)
